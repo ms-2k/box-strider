@@ -160,6 +160,7 @@ public class GameController : MonoBehaviour
                         obstacles[x, y] = wallType;
                         obstacles[x + 1, y] = wallType + 3;
                         break;
+
                     //tall wall
                     case 3:
                         if (obstacles[x, y + 1] > 1)
@@ -169,6 +170,7 @@ public class GameController : MonoBehaviour
                         obstacles[x, y] = wallType;
                         obstacles[x, y + 1] = wallType + 3;
                         break;
+
                     //large wall
                     case 4:
                         if (obstacles[x + 1, y + 1] > 1 || obstacles[x, y + 1] > 1 || obstacles[x + 1, y] > 1)
@@ -180,6 +182,7 @@ public class GameController : MonoBehaviour
                         obstacles[x, y + 1] = wallType + 2;
                         obstacles[x + 1, y + 1] = wallType + 3;
                         break;
+
                     //small wall
                     case 1:
                         obstacles[x, y] = 1;
@@ -233,23 +236,41 @@ public class GameController : MonoBehaviour
         //select where to spawn players
         for (int i = 0; i < numPlayers; i++)
         {
+
+            //do until players are adequately spaced apart
             while (true)
             {
+
+                //initialize distance check
                 distanceCheck = true;
+
+                //select random coordinates
                 coords[i, 0] = Random.Range(1, width - 2);
                 coords[i, 1] = Random.Range(1, height - 2);
+
+                //loop through player coordinate array
                 for (int j = 0; j < numPlayers; j++)
                 {
+                    //skip if it's the same player or if target player coordinate isn't initialized
                     if (i == j || coords[j, 0] == 0)
                         continue;
+
+                    //check if distance is lesser than target player distance
                     if (Mathf.Sqrt(Mathf.Pow(coords[i, 0] - coords[j, 0], 2) + Mathf.Pow(coords[i, 1] - coords[j, 1], 2)) < playerDistance)
                     {
+
+                        //set distance check false and break out
                         distanceCheck = false;
                         break;
                     }
                 }
+
+                //if the selected coordinate is empty and it is adequately far from another player
                 if (obstacles[coords[i, 0], coords[i, 1]] >= 8 && distanceCheck)
                 {
+
+                    //mark where the player should be at in obstacles (it is not yet applied)
+                    //a negative value will be used ranging from -1 to -4 to indicate players 1 to 4
                     obstacles[coords[i, 0], coords[i, 1]] = -(i + 1);
                     break;
                 }
@@ -303,10 +324,17 @@ public class GameController : MonoBehaviour
                             newWall = Instantiate(wallLarge, new Vector3(x - 12f, 0, -(y - 7f)), new Quaternion(0, 0, 0, 0));
                         newWall.transform.parent = wallParent.transform;
                         break;
+                    
+                    //default case (basically players)
                     default:
+
+                        //if the value is negative (which is reserved for players)
                         if (obstacles[x, y] < 0)
                         {
+                            //fetch player game object and set its coordinates accordingly
                             players[-obstacles[x, y] - 1].transform.position = new Vector3(x - 12.5f, 0, -(y - 7.5f));
+
+                            //reset rotation too
                             players[-obstacles[x, y] - 1].transform.rotation = Quaternion.Euler(0, 0, 0);
                         }
                         break;
