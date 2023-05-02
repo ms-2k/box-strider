@@ -2,4 +2,5 @@
 
 Simple game of tag built in Unity
 
-3D assets used are from [this amazing site](https://www.kenney.nl/assets)
+All assets used are public domain
+Please support the artist by visiting [their amazing website](https://www.kenney.nl/assets)
