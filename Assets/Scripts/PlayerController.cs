@@ -1,9 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PlayerController : MonoBehaviour
 {
+    //player ID
+    //0 = apple
+    //1 = barrel
+    //2 = broccoli
+    //3 = rice ball
+    public int id = -1;
+
     //is the player the it
     public bool it = false;
 
@@ -12,6 +20,10 @@ public class PlayerController : MonoBehaviour
 
     //how much to slow the player down by on wall collisioni (default 5)
     private float obstacleMult = 5f;
+
+    //TODO
+    //load from playerprefs and use this instead of public keycodes
+    private readonly KeyCode[,] controlKeys;
 
     //control keys (default WASD)
     public KeyCode upKey = KeyCode.W;
@@ -25,11 +37,11 @@ public class PlayerController : MonoBehaviour
     //the game controller (to get variables)
     public GameController gameController;
 
-    //time spent as it
-    public float timeAsIt { get; private set; }
-
     //it indicator
     private GameObject itIndicator;
+
+    //sound controller object
+    private SoundController soundController;
 
     //center of body level at which the object is no longer "on the ground"
     private float onGoundThreshold = 0.37f;
@@ -50,10 +62,17 @@ public class PlayerController : MonoBehaviour
 
         //get it indicator controller
         itIndicator = gameController.itIndicator;
+
+        //find sound controller object
+        soundController = GameObject.FindGameObjectWithTag("SFX").GetComponent<SoundController>();
     }
 
     void Update()
     {
+        if (!gameController.gameStart)
+            return;
+
+        //check if game over (disable controls if it's game over)
         if (gameController.gameOver)
             return;
 
@@ -64,10 +83,6 @@ public class PlayerController : MonoBehaviour
             cooldown -= Time.deltaTime;
             return;
         }
-
-        //accumulate time as it
-        if (it)
-            timeAsIt += Time.deltaTime;
 
         //move up
         if (Input.GetKey(upKey) && playerRigidbody.worldCenterOfMass.y < onGoundThreshold)
@@ -104,13 +119,14 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+
         //check if the player collided with an obstacle (wall)
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.CompareTag("Wall"))
         {
             //make the player slower if so
             speed /= obstacleMult;
         }
-        if (collision.gameObject.tag == "Player" && it && cooldown <= 0)
+        if (collision.gameObject.CompareTag("Player") && it && cooldown <= 0 && !gameController.gameOver)
         {
             //shortcut to collision target player controller
             PlayerController target = collision.gameObject.GetComponent<PlayerController>();
@@ -122,29 +138,28 @@ public class PlayerController : MonoBehaviour
             target.BecomeIt(gameController.itScale, gameController.itSpeed);
 
             //move it indicator to the new it
-            itIndicator.GetComponent<IndicatorController>().ChangeTarget(target.gameObject);
+            itIndicator.GetComponent<IndicatorController>().ChangeTarget(collision.gameObject);
 
+            //play hit sound
+            soundController.playSwish();
         }
     }
 
     private void OnCollisionExit(Collision collision)
     {
         //reverse collision slow down
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.CompareTag("Wall"))
         {
             speed *= obstacleMult;
         }
     }
 
-    //getter for it
-    public bool isIt()
-    {
-        return it;
-    }
-
     //makes the player it
     public void BecomeIt(float scaleMult, float speedMult)
     {
+        //update it ID in game controller
+        gameController.itId = id;
+
         //set it
         it = true;
 
@@ -179,5 +194,10 @@ public class PlayerController : MonoBehaviour
         );
 
         onGoundThreshold /= scaleMult;
+    }
+
+    public void SetID(int id)
+    {
+        this.id = id;
     }
 }

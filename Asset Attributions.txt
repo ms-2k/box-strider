@@ -1,0 +1,16 @@
+All custom assets used are CC0
+Thank you to all the awesome artists that worked hard to make these assets!
+
+
+3D assets (boxes and player models):
+https://www.kenney.nl/assets
+
+
+2D icons (arrow key, knife, and crown):
+https://www.svgrepo.com
+
+Audio (bgm and click sfx):
+https://opengameart.org/content/click
+https://opengameart.org/content/where-was-i
+
+Title is custom made
