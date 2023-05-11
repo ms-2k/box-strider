@@ -109,6 +109,11 @@ public class GameController : MonoBehaviour
         if (!gameStart)
             return;
 
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            RestartGame();
+        }
+
         if (!gameOver)
         {
             //accumulate time as it while game is running
@@ -158,6 +163,15 @@ public class GameController : MonoBehaviour
 
         //deactivate game starter UI
         gameStarter.SetActive(false);
+
+        //reset it indicator (dunno why it breaks without)
+        for (int i = 0; i < numPlayers; i++)
+        {
+            if (players[i].GetComponent<PlayerController>().it)
+            {
+                itIndicator.GetComponent<IndicatorController>().ChangeTarget(players[i]);
+            }
+        }
     }
 
     //regenerates the map
@@ -168,5 +182,11 @@ public class GameController : MonoBehaviour
 
         //generate again
         GetComponent<MapGenerator>().GenerateObstacles(players, numPlayers, width, height, playerDistance, wallChance);
+    }
+
+    //exits the game
+    public void StopGame()
+    {
+        Application.Quit();
     }
 }
