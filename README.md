@@ -2,5 +2,8 @@
 
 Simple game of tag built in Unity
 
-All art assets used are public domain.
-Please support the artist by visiting [their amazing website](https://www.kenney.nl/assets)
+
+
+Play with 4 players locally
+
+Run around auto generated obstacles
