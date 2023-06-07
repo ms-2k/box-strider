@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRigidbody;
 
     //the game controller (to get variables)
-    public GameController gameController;
+    public GameControllerSingle gameController;
 
     //it indicator
     private GameObject itIndicator;

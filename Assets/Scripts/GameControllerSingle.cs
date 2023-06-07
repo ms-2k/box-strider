@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameController : MonoBehaviour
+public class GameControllerSingle : MonoBehaviour
 {
     //list of player game objects
     private GameObject[] players;
@@ -152,7 +152,7 @@ public class GameController : MonoBehaviour
     public void RestartGame()
     {
         //reload the current scene
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("Main");
     }
 
     //starts the game
@@ -187,6 +187,6 @@ public class GameController : MonoBehaviour
     //exits the game
     public void StopGame()
     {
-        Application.Quit();
+        SceneManager.LoadScene("Main");
     }
 }

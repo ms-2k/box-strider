@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Wall
   - SFX
+  - LobbyManager
+  - Indicator
+  - PlayerParent
   layers:
   - Default
   - TransparentFX
