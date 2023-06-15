@@ -11,9 +11,7 @@ using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class LobbyManager : NetworkBehaviour
@@ -92,7 +90,7 @@ public class LobbyManager : NetworkBehaviour
     async void Start()
     {
         InitializationOptions options = new InitializationOptions();
-        string playerName = PlayerPrefs.GetString("playerName", "BoxStrider") + Random.Range(1, 100);
+        string playerName = PlayerPrefs.GetString("playerName", "BoxStrider") + Random.Range(1, 1000);
         options.SetProfile(playerName);
 
         //wait for unity services

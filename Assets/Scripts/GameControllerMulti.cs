@@ -104,10 +104,8 @@ public class GameControllerMulti : NetworkBehaviour
 
         //return to main menu on return button click
         returnButton.onClick.AddListener(() => {
-            soundController.playClick();
-            AuthenticationService.Instance.SignOut();
-            NetworkManager.Singleton.Shutdown();
-            SceneManager.LoadScene("Main");
+            DisconnectServerRpc();
+            Disconnect();
         });
 
         //synchronize initial game timer and prevSec
@@ -125,16 +123,8 @@ public class GameControllerMulti : NetworkBehaviour
         //return to menu if Escape is clicked
         if (Input.GetKey(KeyCode.Escape))
         {
-            soundController.playClick();
-            try
-            {
-                NetworkManager.Shutdown();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex);
-            }
-            SceneManager.LoadScene("Main");
+            DisconnectServerRpc();
+            Disconnect();
         }
 
         //wait until there are 4 players
@@ -183,6 +173,43 @@ public class GameControllerMulti : NetworkBehaviour
             return players.Count;
         else
             return 4; //no idea why I need this but I do
+    }
+
+
+    private void Disconnect()
+    {
+        //play click sound
+        soundController.playClick();
+
+        //sign out of authentication service
+        AuthenticationService.Instance.SignOut();
+
+        //shutdown network manager and destroy it
+        NetworkManager.Singleton.Shutdown();
+        if (NetworkManager.Singleton != null)
+        {
+            Destroy(NetworkManager.Singleton);
+        }
+
+        //reload main menu
+        SceneManager.LoadScene("Main");
+    }
+
+    //disconnect player from server
+    [ServerRpc]
+    private void DisconnectServerRpc()
+    {
+        //temp solution
+        //TODO: figure out removing specific player instead of disconnecting everyone
+        DisconnectAllClientRpc();
+    }
+
+    //remove all players from the game
+    [ClientRpc]
+    private void DisconnectAllClientRpc()
+    {
+        //call disconnect in each client
+        Disconnect();
     }
 
     //run on game over
